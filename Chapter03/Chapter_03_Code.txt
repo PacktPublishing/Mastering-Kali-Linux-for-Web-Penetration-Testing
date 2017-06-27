@@ -1,0 +1,49 @@
+Chapter 3: Stalking Prey Through Recon
+
+Making a Stealthy Initial Archive
+
+httrack "http://www.hackthissite.org/" -O "/tmp/www.hackthissite.org" "+*.hackthissite.org/*"
+Tuning Stealthier Archives
+
+Editing the .httrackrc file:
+
+set assume asp=text/html,php3=text/html,cgi=image/gif,dat=application/x-zip,mpg=application/x-mp3
+CLI:
+
+httrack www.hackthissite.org -O /tmp/hackthissite –c4 -%c10 –A20000000 –m50000000 –m1000000’ –M100000000 –r25 –H2 –www.hackthissite.org/forums/* -www.hackthissite.org/user/*
+
+
+Google Hacking
+
+site:<target site> username|userid|password|passcode|pwd
+site:<target site> inurl:index
+site:<target site> ext:php inurl:index
+site:<target site> filetype:xls inurl:finance
+site:<target site> intitle:”index.of” robots.txt
+site:packtpub.com –site:www.packtpub.com
+site:packtpub.com NOT site:www.packtpub.com
+
+
+Digging Record Types
+
+dig packtpub.com ANY
+dig packtpub.com ANY +noall +answer
+dig axfr @nsztm1.digi.ninja zonetransfer.me
+
+
+Getting Fierce
+
+fierce -dns zonetransfer.me -file /root/Desktop/packtpub.txt
+fierce -dns <target domain> -connect <wordlist>
+
+
+Next Steps with Nikto
+
+Edit config:
+
+nano /etc/nikto/config.txt
+# Proxy settings -- still must be enabled by -useproxyPROXYHOST=<IP address of proxy>PROXYPORT=<usually 8080, can be anything if using something like squid>
+
+Launch scans:
+
+nikto -Tuning x 6 9 -useproxy -h http://192.168.1.132 
